@@ -14,13 +14,13 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class ItemFrameListener implements Listener {
     private final NamespacedKey keyUuid;
@@ -49,16 +49,20 @@ public class ItemFrameListener implements Listener {
                     Location location = itemFrame.getLocation();
                     if (player.hasPermission("itemframe.protect.bypass")) {
                         Optional<String> itemFrameOwnerName = getItemFrameOwnerName(itemFrame);
-                        itemFrameOwnerName.ifPresent(s -> player.sendMessage(Component.text("已移除位于 %d,%d,%d 的由 %s 创建的展示框保护！".formatted(location.getBlockX(), location.getBlockY(), location.getBlockZ(), s), NamedTextColor.AQUA)));
+                        if (itemFrameOwnerName.isPresent()) {
+                            player.sendMessage(Component.text("已移除位于 %s %d,%d,%d 的由 %s 创建的展示框保护".formatted(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), itemFrameOwnerName.get()), NamedTextColor.AQUA));
+                            plugin.getLogger().log(Level.INFO, "%s 移除了位于 %s %d,%d,%d 的由 %s 创建的展示框保护".formatted(player.getName(), location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), itemFrameOwnerName.get()));
+                        }
                     } else {
-                        player.sendMessage(Component.text("已移除位于 %d,%d,%d 的展示框保护！".formatted(location.getBlockX(), location.getBlockY(), location.getBlockZ()), NamedTextColor.AQUA));
+                        player.sendMessage(Component.text("已移除位于 %s %d,%d,%d 的展示框保护".formatted(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()), NamedTextColor.AQUA));
+                        plugin.getLogger().log(Level.INFO, "%s 移除了位于 %s %d,%d,%d 的展示框保护".formatted(player.getName(), location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
                     }
                     itemFrame.getPersistentDataContainer().remove(keyUuid);
                     itemFrame.getPersistentDataContainer().remove(keyName);
                 } else {
                     Optional<String> itemFrameOwnerName = getItemFrameOwnerName(itemFrame);
                     if (itemFrameOwnerName.isPresent()) {
-                        player.sendMessage(Component.text("该展示框由 %s 设置保护，不能移除！".formatted(itemFrameOwnerName.get()), NamedTextColor.YELLOW));
+                        player.sendMessage(Component.text("该展示框由其他玩家(%s)设置保护，不能移除！".formatted(itemFrameOwnerName.get()), NamedTextColor.YELLOW));
                     } else {
                         player.sendMessage(Component.text("该展示框由其他玩家设置保护，不能移除！", NamedTextColor.YELLOW));
                     }
@@ -97,7 +101,8 @@ public class ItemFrameListener implements Listener {
                 Location location = itemFrame.getLocation();
                 itemFrame.getPersistentDataContainer().set(keyUuid, PersistentDataType.STRING, player.getUniqueId().toString());
                 itemFrame.getPersistentDataContainer().set(keyName, PersistentDataType.STRING, player.getName());
-                player.sendMessage(Component.text("已设置位于 %d,%d,%d 的展示框保护！".formatted(location.getBlockX(), location.getBlockY(), location.getBlockZ()), NamedTextColor.GREEN));
+                player.sendMessage(Component.text("已设置位于 %s %d,%d,%d 的展示框保护".formatted(location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()), NamedTextColor.GREEN));
+                plugin.getLogger().log(Level.INFO, "%s 设置了位于 %s %d,%d,%d 的展示框保护".formatted(player.getName(), location.getWorld().getName(), location.getBlockX(), location.getBlockY(), location.getBlockZ()));
             } else if (player.getUniqueId().toString().equals(ownerUuid.get().toString())) {
                 player.sendMessage(Component.text("该展示框已设置保护！", NamedTextColor.YELLOW));
             } else {
