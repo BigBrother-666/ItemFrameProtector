@@ -1,0 +1,19 @@
+name: ItemFrameProtect
+version: '${project.version}'
+main: com.bigbrother.itemFrameProtect.ItemFrameProtect
+api-version: '1.20'
+authors: [ BigBrother ]
+
+
+commands:
+  itemframe:
+    description: 展示框保护指令
+    aliases: [ itemframe, if ]
+
+permissions:
+  itemframe.protect.mark:
+    description: "保护/解除保护展示框指令权限"
+    default: op
+  itemframe.protect.bypass:
+    description: "解锁任意受保护的展示框权限"
+    default: op
