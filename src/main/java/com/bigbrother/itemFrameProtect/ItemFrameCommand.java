@@ -13,11 +13,9 @@ import java.util.*;
 public class ItemFrameCommand implements CommandExecutor {
     @Getter
     private final Set<UUID> markingPlayers = new HashSet<>();  // 存储处于标记模式的玩家
-    private final ItemFrameProtect plugin;
 
     public ItemFrameCommand(ItemFrameProtect plugin) {
-        this.plugin = plugin;
-        PluginCommand command = this.plugin.getCommand("itemframe");
+        PluginCommand command = plugin.getCommand("itemframe");
         if (command != null) {
             command.setExecutor(this);
             command.setTabCompleter(new ItemFrameCommandTabCompleter());
