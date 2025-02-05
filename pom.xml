@@ -6,7 +6,7 @@
 
     <groupId>com.bigbrother</groupId>
     <artifactId>ItemFrameProtect</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>ItemFrameProtect</name>
@@ -97,12 +97,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>5.0.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
